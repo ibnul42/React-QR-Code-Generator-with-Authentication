@@ -35,11 +35,9 @@ function Login() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(loginInfo, formData);
     axios
       .post("http://localhost:5000/loginUser", formData)
       .then((res) => {
-        console.log(res);
         setAuthenticate(true);
         generateQrCode(res.data.authenticationCode);
         setLoginmessage("Please verify via QRCode");
