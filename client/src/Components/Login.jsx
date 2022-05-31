@@ -36,16 +36,6 @@ function Login() {
   const onSubmit = (e) => {
     e.preventDefault();
     console.log(loginInfo, formData);
-    // if (
-    //   formData.username === loginInfo.username &&
-    //   formData.password === loginInfo.password
-    // ) {
-    //   setAuthenticate(true);
-    //   generateQrCode();
-    //   setLoginmessage("Please verify via QRCode");
-    // } else {
-    //   setLoginmessage("Invalid Credential");
-    // }
     axios
       .post("http://localhost:5000/loginUser", formData)
       .then((res) => {
@@ -58,8 +48,6 @@ function Login() {
   };
 
   const generateQrCode = async (code) => {
-    // const randomNumber = (Math.random() * 100000).toFixed(0);
-    // console.log(randomNumber);
     try {
       setQrCodeNumber(code);
       const response = await QRCode.toDataURL(code);
