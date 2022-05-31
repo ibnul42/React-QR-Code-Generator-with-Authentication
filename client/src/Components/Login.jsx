@@ -3,10 +3,11 @@ import { CardContent, Grid, TextField, Button } from "@mui/material";
 import { useState } from "react";
 import QRCode from "qrcode";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 //   loginInformation
 const loginInfo = {
-  userName: "aaa",
+  username: "aaa",
   password: "123",
 };
 
@@ -19,11 +20,11 @@ function Login() {
   const [authenticate, setAuthenticate] = useState(false);
 
   const [formData, setFormData] = useState({
-    userName: "",
+    username: "",
     password: "",
   });
 
-  const { userName, password } = formData;
+  const { username, password } = formData;
 
   const onChange = (e) => {
     setFormData((prevData) => ({
@@ -35,24 +36,33 @@ function Login() {
   const onSubmit = (e) => {
     e.preventDefault();
     console.log(loginInfo, formData);
-    if (
-      formData.userName === loginInfo.userName &&
-      formData.password === loginInfo.password
-    ) {
-      setAuthenticate(true);
-      generateQrCode();
-      setLoginmessage("Please verify via QRCode");
-    } else {
-      setLoginmessage("Invalid Credential");
-    }
+    // if (
+    //   formData.username === loginInfo.username &&
+    //   formData.password === loginInfo.password
+    // ) {
+    //   setAuthenticate(true);
+    //   generateQrCode();
+    //   setLoginmessage("Please verify via QRCode");
+    // } else {
+    //   setLoginmessage("Invalid Credential");
+    // }
+    axios
+      .post("http://localhost:5000/loginUser", formData)
+      .then((res) => {
+        console.log(res);
+        setAuthenticate(true);
+        generateQrCode(res.data.authenticationCode);
+        setLoginmessage("Please verify via QRCode");
+      })
+      .catch((err) => console.log(err.response));
   };
 
-  const generateQrCode = async () => {
-    const randomNumber = (Math.random() * 100000).toFixed(0);
-    console.log(randomNumber);
+  const generateQrCode = async (code) => {
+    // const randomNumber = (Math.random() * 100000).toFixed(0);
+    // console.log(randomNumber);
     try {
-      setQrCodeNumber(randomNumber.toString());
-      const response = await QRCode.toDataURL(randomNumber.toString());
+      setQrCodeNumber(code);
+      const response = await QRCode.toDataURL(code);
       setImageUrl(response);
     } catch (error) {
       console.log(error);
@@ -72,9 +82,9 @@ function Login() {
       <form onSubmit={onSubmit}>
         <input
           type="text"
-          placeholder="userName"
-          name="userName"
-          value={userName}
+          placeholder="username"
+          name="username"
+          value={username}
           onChange={onChange}
         />
         <br /> <br />
