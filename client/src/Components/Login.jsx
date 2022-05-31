@@ -46,7 +46,6 @@ function Login() {
       })
       .catch((err) => console.log(err.response));
   };
-
   const generateQrCode = async (code) => {
     try {
       setQrCodeNumber(code);
