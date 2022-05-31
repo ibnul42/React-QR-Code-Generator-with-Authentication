@@ -61,6 +61,7 @@ function Login() {
 
   const verifyQrCode = (text) => {
     if (qrCodeNumber === text) {
+      alert("Authentication Success!");
       navigate("/");
     } else {
       alert("Please enter valid QR Code");
