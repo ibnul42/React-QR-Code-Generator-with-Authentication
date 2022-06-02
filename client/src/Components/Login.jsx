@@ -36,7 +36,7 @@ function Login() {
   const onSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:5000/loginUser", formData)
+      .post("http://localhost:5000/loginWithUsername", formData)
       .then((res) => {
         setAuthenticate(true);
         generateQrCode(res.data.authenticationCode);
