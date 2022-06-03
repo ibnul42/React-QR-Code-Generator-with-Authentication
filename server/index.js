@@ -6,24 +6,57 @@ const UserModel = require("./models/Users");
 const cors = require("cors");
 
 mongoose.connect(
-  "mongodb+srv://user001:Password1234@cluster0.wxqfzpv.mongodb.net/multiAuth?retryWrites=true&w=majority"
+  "mongodb+srv://kirk:gUV1IHpZY5LB3iKP@cluster0.c64ng.mongodb.net/test?retryWrites=true&w=majority"
 );
 
 app.use(express.json());
 app.use(cors());
 
-app.post("/loginUser", async (req, res) => {
+app.post("/loginWithUsername", async (req, res) => {
   const { username, password } = req.body;
 
   // check for user username
   const user = await UserModel.findOne({ username });
   if (user === null) {
-    res.status(400).json("Invalid username or password");
+    res
+      .status(200)
+      .json({ status: 406, message: "Invalid username or password" });
   } else if (user.username !== username || user.password !== password) {
-    res.status(400).json("Invalid username or password");
+    res
+      .status(200)
+      .json({ status: 406, message: "Invalid username or password" });
   } else {
     const authenticationCode = (Math.random() * 100000).toFixed(0);
-    res.status(200).json({ user, authenticationCode });
+    res.status(200).json({
+      user,
+      authenticationCode,
+      status: 200,
+      message: "Login Success!",
+    });
+  }
+});
+
+app.post("/loginWithEmail", async (req, res) => {
+  const { email, password } = req.body;
+
+  // check for user email
+  const user = await UserModel.findOne({ email });
+  if (user === null) {
+    res
+      .status(200)
+      .json({ status: 406, message: "Invalid username or password" });
+  } else if (user.email !== email || user.password !== password) {
+    res
+      .status(200)
+      .json({ status: 406, message: "Invalid username or password" });
+  } else {
+    const authenticationCode = (Math.random() * 100000).toFixed(0);
+    res.status(200).json({
+      user,
+      authenticationCode,
+      status: 200,
+      message: "Login Success!",
+    });
   }
 });
 
@@ -32,17 +65,17 @@ app.post("/createUser", async (req, res) => {
   const { name, username, password } = req.body;
 
   if (!username || !name || !password) {
-    res.status(400).json("Please fill all fields");
+    res.status(200).json({ status: 400, message: "Please fill all fields" });
   }
   // Check if user exists
   const userExists = await UserModel.findOne({ username });
 
   if (userExists) {
-    res.status(400).json("User already exists");
+    res.status(200).json({ status: 404, message: "User already exists" });
   } else {
     const newUser = new UserModel(user);
     await newUser.save();
-    res.status(200).json("User created successfully");
+    res.status(200).json({ status: 200, message: "User created successfully" });
   }
 });
 

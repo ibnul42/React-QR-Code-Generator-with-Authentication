@@ -1,17 +1,32 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../Feature/auth/authSlice";
 
 function Register() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
     username: "",
     email: "",
     password: "",
   });
+
+  const { statusCode, message } = useSelector((state) => state.auth);
   const { name, username, email, password } = formData;
+
+  useEffect(() => {
+    if (statusCode === 400) {
+      toast.warning(message);
+    } else if (statusCode === 404) {
+      toast.error(message);
+    } else if (statusCode === 200) {
+      toast.success(message);
+      navigate("/");
+    }
+  }, [statusCode, message, navigate]);
 
   const onChange = (e) => {
     setFormData((prevData) => ({
@@ -22,22 +37,22 @@ function Register() {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    axios
-      .post("http://localhost:5000/createUser", formData)
-      .then((res) => {
-        toast.success(res.data);
-        setFormData({
-          name: "",
-          username: "",
-          email: "",
-          password: "",
-        });
-        navigate("/");
-      })
-      .catch((err) => {
-        toast.error(err.response.data);
-      });
+    dispatch(registerUser(formData));
+    // axios
+    //   .post("http://localhost:5000/createUser", formData)
+    //   .then((res) => {
+    //     toast.success(res.data);
+    //     setFormData({
+    //       name: "",
+    //       username: "",
+    //       email: "",
+    //       password: "",
+    //     });
+    //     navigate("/");
+    //   })
+    //   .catch((err) => {
+    //     toast.error(err.response.data);
+    //   });
   };
   return (
     <div className="max-w-7xl mx-auto my-5">

@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "qrcode";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { login, loginWithEmail } from "../Feature/auth/authSlice";
 
 function Login() {
+  const { statusCode, message, authenticationCode } = useSelector(
+    (state) => state.auth
+  );
+  const dispatch = useDispatch();
   const [userState, setUserState] = useState(true);
   const [emailState, setEmailState] = useState(false);
   const [mfaState, setMfaState] = useState(false);
@@ -20,6 +25,17 @@ function Login() {
     email: "",
     password: "",
   });
+  useEffect(() => {
+    if (statusCode === 200) {
+      setAuthenticate(true);
+      generateQrCode(authenticationCode);
+      toast.warning("Please verify via QRCode");
+      currentState("mfa");
+    } else if (statusCode === 406) {
+      toast.error(message);
+      setAuthenticate(false);
+    }
+  }, [statusCode, authenticationCode, message]);
 
   const { username, password, email } = formData;
 
@@ -32,34 +48,12 @@ function Login() {
 
   const onSubmitUsername = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:5000/loginWithUsername", formData)
-      .then((res) => {
-        setAuthenticate(true);
-        generateQrCode(res.data.authenticationCode);
-        toast.warning("Please verify via QRCode");
-        currentState("mfa");
-      })
-      .catch((err) => {
-        toast.error(err.response.data);
-        setAuthenticate(false);
-      });
+    dispatch(login(formData));
   };
 
   const onSubmitEmail = (e) => {
     e.preventDefault();
-    axios
-      .post("http://localhost:5000/loginWithEmail", formData)
-      .then((res) => {
-        setAuthenticate(true);
-        generateQrCode(res.data.authenticationCode);
-        toast.warning("Please verify via QRCode");
-        currentState("mfa");
-      })
-      .catch((err) => {
-        toast.error(err.response.data);
-        setAuthenticate(false);
-      });
+    dispatch(loginWithEmail(formData));
   };
 
   const generateQrCode = async (code) => {
