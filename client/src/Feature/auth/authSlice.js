@@ -6,6 +6,7 @@ const initialState = {
   statusCode: null,
   message: null,
   authenticationCode: null,
+  logginType: null,
 };
 
 // login user
@@ -66,7 +67,13 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    initialState,
+    reset: (state) => {
+      state.user = null;
+      state.statusCode = null;
+      state.message = null;
+      state.authenticationCode = null;
+      state.logginType = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -75,30 +82,35 @@ export const authSlice = createSlice({
         state.statusCode = null;
         state.message = null;
         state.authenticationCode = null;
+        state.logginType = null;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.statusCode = action.payload.status;
         state.message = action.payload.message;
         state.authenticationCode = action.payload.authenticationCode;
+        state.logginType = action.payload.logginType;
       })
       .addCase(loginWithEmail.pending, (state) => {
         state.user = null;
         state.statusCode = null;
         state.message = null;
         state.authenticationCode = null;
+        state.logginType = null;
       })
       .addCase(loginWithEmail.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.statusCode = action.payload.status;
         state.message = action.payload.message;
         state.authenticationCode = action.payload.authenticationCode;
+        state.logginType = action.payload.logginType;
       })
       .addCase(registerUser.pending, (state) => {
         state.user = null;
         state.statusCode = null;
         state.message = null;
         state.authenticationCode = null;
+        state.logginType = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.statusCode = action.payload.status;
@@ -107,4 +119,5 @@ export const authSlice = createSlice({
   },
 });
 
+export const { reset } = authSlice.actions;
 export default authSlice.reducer;

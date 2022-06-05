@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { login, loginWithEmail } from "../Feature/auth/authSlice";
 
 function Login() {
-  const { statusCode, message, authenticationCode } = useSelector(
+  const { statusCode, message, authenticationCode, logginType } = useSelector(
     (state) => state.auth
   );
   const dispatch = useDispatch();
@@ -158,6 +158,7 @@ function Login() {
                         onChange={onChange}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 sm:w-9/12 md:w-8/12 lg:w-1/2"
                         required
+                        disabled={logginType === "username" ? true : false}
                       />
                     </div>
                     <div className="mb-6">
@@ -175,11 +176,13 @@ function Login() {
                         onChange={onChange}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 sm:w-9/12 md:w-8/12 lg:w-1/2"
                         required
+                        disabled={logginType === "username" ? true : false}
                       />
                     </div>
                     <button
                       type="submit"
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      disabled={logginType === "username" ? true : false}
                     >
                       Login
                     </button>
@@ -202,6 +205,7 @@ function Login() {
                         onChange={onChange}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 sm:w-9/12 md:w-8/12 lg:w-1/2"
                         required
+                        disabled={logginType === "email" ? true : false}
                       />
                     </div>
                     <div className="mb-6">
@@ -219,11 +223,13 @@ function Login() {
                         onChange={onChange}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 sm:w-9/12 md:w-8/12 lg:w-1/2"
                         required
+                        disabled={logginType === "email" ? true : false}
                       />
                     </div>
                     <button
                       type="submit"
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      disabled={logginType === "email" ? true : false}
                     >
                       Login
                     </button>

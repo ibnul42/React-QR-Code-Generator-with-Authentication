@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../Feature/auth/authSlice";
+import { registerUser, reset } from "../Feature/auth/authSlice";
 
 function Register() {
   const navigate = useNavigate();
@@ -24,6 +24,7 @@ function Register() {
       toast.error(message);
     } else if (statusCode === 200) {
       toast.success(message);
+      dispatch(reset());
       navigate("/");
     }
   }, [statusCode, message, navigate]);

@@ -26,12 +26,16 @@ app.post("/loginWithUsername", async (req, res) => {
       .status(200)
       .json({ status: 406, message: "Invalid username or password" });
   } else {
-    const authenticationCode = (Math.random() * 100000).toFixed(0);
+    let authenticationCode = 0;
+    while (authenticationCode.length !== 6) {
+      authenticationCode = (Math.random() * 1000000).toFixed(0);
+    }
     res.status(200).json({
       user,
       authenticationCode,
       status: 200,
       message: "Login Success!",
+      logginType: "username",
     });
   }
 });
@@ -42,20 +46,20 @@ app.post("/loginWithEmail", async (req, res) => {
   // check for user email
   const user = await UserModel.findOne({ email });
   if (user === null) {
-    res
-      .status(200)
-      .json({ status: 406, message: "Invalid username or password" });
+    res.status(200).json({ status: 406, message: "Invalid email or password" });
   } else if (user.email !== email || user.password !== password) {
-    res
-      .status(200)
-      .json({ status: 406, message: "Invalid username or password" });
+    res.status(200).json({ status: 406, message: "Invalid email or password" });
   } else {
-    const authenticationCode = (Math.random() * 100000).toFixed(0);
+    let authenticationCode = 0;
+    while (authenticationCode.length !== 6) {
+      authenticationCode = (Math.random() * 1000000).toFixed(0);
+    }
     res.status(200).json({
       user,
       authenticationCode,
       status: 200,
       message: "Login Success!",
+      logginType: "email",
     });
   }
 });
