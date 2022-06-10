@@ -53,11 +53,11 @@ app.post("/register/finish", async (req, res) => {
       !req.body?.username?.trim() ||
       !req.body?.name?.trim() ||
       !req.body?.twofactor_token?.trim() ||
-      body?.twofactor_code?.trim()
+      !req.body?.twofactor_code?.trim()
     ) {
-      res.json({ ok: false, msg: "Please enter all required fields" });
+      return res.json({ ok: false, msg: "Please enter all required fields" });
     }
-    const i = (p, ...s) => s.map((_) => s[_].trim());
+    const i = (o, ...s) => s.map((_) => o[_].trim());
     //   will destructure the given data // Trimed
     const [username, password, name, twofactor_token, twofactor_code] = i(
       req.body,
@@ -101,6 +101,61 @@ app.post("/register/finish", async (req, res) => {
     });
   } catch (error) {
     res.json({ ok: false, msg: error });
+  }
+});
+
+app.post("/login", async (req, res) => {
+  try {
+    const {
+      username: username = null,
+      password: password = null,
+      twofactor_code: twofacode = null,
+      twofatoken: token = null,
+    } = req.body;
+
+    if (!username || !password) {
+      return res.json({ ok: false, msg: "Invalid login" });
+    }
+
+    const verify = await User.findOne({ username });
+
+    if (!verify) {
+      return res.json({ ok: false, msg: "Invalid login" });
+    }
+
+    const check = bcrypt.compare(password, verify.password);
+
+    if (!check) {
+      return res.json({ ok: false, msg: "Invalid login" });
+    }
+    if (token) {
+      const matched = twofactor.verifyToken(token, twofacode);
+
+      if (!matched) {
+        return res.json({ ok: false, msg: "Invalid login" });
+      }
+
+      let backup = { ...verify._doc };
+
+      delete backup.password;
+      delete backup._v;
+      delete backup._id;
+
+      res.status(200).json({
+        ok: true,
+        msg: "Successfully logged in",
+        user: backup,
+      });
+    } else {
+      return res.status(200).json({
+        ok: true,
+        status: 101,
+        msg: "need 2fa verification",
+        "2fa_token": verify.twofactor,
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ ok: false, msg: error.toString() });
   }
 });
 
