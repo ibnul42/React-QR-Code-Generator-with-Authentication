@@ -49,9 +49,9 @@ app.post("/register", async (req, res) => {
 app.post("/register/finish", async (req, res) => {
   try {
     if (
-      !req.body?.password?.trim() ||
-      !req.body?.username?.trim() ||
       !req.body?.name?.trim() ||
+      !req.body?.username?.trim() ||
+      !req.body?.password?.trim() ||
       !req.body?.twofactor_token?.trim() ||
       !req.body?.twofactor_code?.trim()
     ) {
@@ -106,6 +106,7 @@ app.post("/register/finish", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
+    console.log(req.body);
     const {
       username: username = null,
       password: password = null,
@@ -123,7 +124,8 @@ app.post("/login", async (req, res) => {
       return res.json({ ok: false, msg: "Invalid login" });
     }
 
-    const check = bcrypt.compare(password, verify.password);
+    const check = await bcrypt.compare(password, verify.password);
+    console.log(check);
 
     if (!check) {
       return res.json({ ok: false, msg: "Invalid login" });
